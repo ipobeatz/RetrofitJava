@@ -64,5 +64,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             textName.setText(cryptoModel.currency);
             textPrice.setText(cryptoModel.price);
         }
+
+
     }
 }

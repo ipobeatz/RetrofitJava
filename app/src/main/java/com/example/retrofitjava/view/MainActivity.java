@@ -1,10 +1,20 @@
 package com.example.retrofitjava.view;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.retrofitjava.R;
 import com.example.retrofitjava.adapter.RecyclerViewAdapter;
@@ -22,13 +32,15 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     ArrayList<CryptoModel> cryptoModels;
     private String BASE_URL = "https://api.nomics.com/v1/";
     Retrofit retrofit;
     RecyclerView recyclerView;
     RecyclerViewAdapter recyclerViewAdapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
 
 
     @Override
@@ -36,6 +48,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         recyclerView = findViewById(R.id.recyclerView);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+
+
+
+
 
 
         Gson gson = new GsonBuilder().setLenient().create();
@@ -46,7 +64,11 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         loadData();
+
+
+
     }
+
 
     private void loadData(){
         CryptoAPI cryptoAPI = retrofit.create(CryptoAPI.class);
@@ -71,7 +93,33 @@ public class MainActivity extends AppCompatActivity {
         t.printStackTrace();
 
     }
+
+
 });
+    }
+
+
+    @Override
+    public void onRefresh() {
+        Toast.makeText(this, "Refresh", Toast.LENGTH_SHORT).show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(false);
+
+            }
+        }, 2000);
+
+
+
+    }
+
+
+
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
     }
 
 
